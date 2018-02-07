@@ -15,11 +15,6 @@ void setup()
     Serial1.begin(BAUDRATE);
     stream.begin(BAUDRATE);
     servo.begin(stream, SERVO_ID);
-
-    if(!servo.getId()) {
-        //Servo is not found
-        Serial.println("Servo not detected. Check connection, baudrate, and ID.");
-    }
 }
 
 void loop()
