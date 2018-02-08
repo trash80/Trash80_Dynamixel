@@ -2,6 +2,7 @@
 
 #define SERVO_ID 1
 #define BAUDRATE 115200
+#define TRANSMIT_ENABLE_PIN 2 // If using 4 wire dynamixel
 
 Dynamixel::Stream stream(Serial1);
 //Dynamixel::Stream stream(Serial);
@@ -15,11 +16,16 @@ Dynamixel::Servo servo;
 int32_t startPosition = 2095;
 int32_t maxMovement = 500;
 int direction = -1;
+int32_t position;
 
 void setup()
 {
     Serial.begin(115200);
     Serial1.begin(BAUDRATE);
+    if(TRANSMIT_ENABLE_PIN) {
+        Serial1.transmitterEnable(TRANSMIT_ENABLE_PIN);
+    }
+    
     stream.begin(BAUDRATE);
     servo.begin(stream, SERVO_ID);
 
@@ -31,22 +37,20 @@ void setup()
         servo.setTorqueEnable(1);
         servo.setLed(1);
         servo.setGoalPosition(startPosition);
+        position = startPosition;
     }
 }
 
 void loop()
 {
+    position += (direction * 2);
     direction = (position < (startPosition - maxMovement) ) ? 1 : (position > (startPosition + maxMovement) ) ? -1 : direction;
+    
+    servo.setGoalPosition(position);
 
-    servo.setGoalPosition(position + (direction * 16));
-
-    // get a value
-    int32_t position = servo.getPresentPosition();
     Serial.println(position);
 
     // set a value
-    servo.setLed(1);
-    delay(100);
-    servo.setLed(0);
-    delay(100);
+    servo.setLed((direction + 1) / 2);
+    delay(10);
 }

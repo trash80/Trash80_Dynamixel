@@ -1,6 +1,8 @@
 #include <Trash80_Dynamixel.h>
 
 #define BAUDRATE 115200
+#define TRANSMIT_ENABLE_PIN 2 // If using 4 wire dynamixel
+
 #define NUM_SERVOS 2
 uint8_t id[NUM_SERVOS] = {1,2};
 
@@ -15,6 +17,10 @@ void setup()
 {
     Serial.begin(115200);
     Serial1.begin(BAUDRATE);
+    if(TRANSMIT_ENABLE_PIN) {
+        Serial1.transmitterEnable(TRANSMIT_ENABLE_PIN);
+    }
+    
     stream.begin(BAUDRATE);
     for(uint8_t i=0; i != NUM_SERVOS; i++) {
         servo[i].begin(stream, id[i]);
