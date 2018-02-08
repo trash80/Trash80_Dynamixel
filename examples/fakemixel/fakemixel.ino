@@ -2,7 +2,7 @@
 
 #define SERVO_ID 1
 #define BAUDRATE 115200
-#define TRANSMIT_ENABLE_PIN 2 // If using 4 wire dynamixel
+#define TRANSMIT_ENABLE_PIN 2 // Half duplex transmitter pin 
 
 Dynamixel::Stream stream(Serial1);
 //Dynamixel::Stream stream(Serial);

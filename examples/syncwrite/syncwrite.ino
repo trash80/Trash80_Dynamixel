@@ -1,7 +1,7 @@
 #include <Trash80_Dynamixel.h>
 
 #define BAUDRATE 115200
-#define TRANSMIT_ENABLE_PIN 2 // If using 4 wire dynamixel
+#define TRANSMIT_ENABLE_PIN 2 // Half duplex transmitter pin 
 
 #define NUM_SERVOS 2
 uint8_t id[NUM_SERVOS] = {1,2};
