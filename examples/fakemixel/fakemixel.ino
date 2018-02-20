@@ -2,12 +2,12 @@
 
 #define SERVO_ID 1
 #define BAUDRATE 115200
-#define TRANSMIT_ENABLE_PIN 2 // Half duplex transmitter pin 
+#define TRANSMIT_ENABLE_PIN 2 // Half duplex transmitter pin
 
 Dynamixel::Stream stream(Serial1);
 //Dynamixel::Stream stream(Serial);
 
-Dynamixel::DummyServo servo;
+Dynamixel::ServoDummy servo;
 
 void setup()
 {
@@ -17,7 +17,7 @@ void setup()
     if(TRANSMIT_ENABLE_PIN) {
         Serial1.transmitterEnable(TRANSMIT_ENABLE_PIN);
     }
-    
+
     stream.begin(BAUDRATE);
     servo.begin(stream, SERVO_ID);
 }
