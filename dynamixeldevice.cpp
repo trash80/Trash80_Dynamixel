@@ -127,7 +127,7 @@ uint32_t Device::getMessageTimeout(uint32_t baud, uint8_t length)
     // 10 bits per byte at 1 start bit, 1 stop bit, none parity
     // Servo's responseDelayTime is 250 microseconds by default
     // Added an extra 1000us for processing
-    return (((10000000L/baud) + 1) * (length + 9)) + 250 + 1000;
+    return (((10000000L/baud) + 1) * (length + 9)) + 250 + 4000;
 }
 
 bool Device::setValue(uint16_t address, uint8_t value)
