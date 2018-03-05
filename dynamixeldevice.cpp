@@ -12,14 +12,14 @@ void Device::update()
 {
     if(stream->available()) {
         if(stream->isSyncWrite()) {
-            uint16_t totalsize = (stream->getSize() - 4) * 2;
+            int16_t totalsize = (stream->getSize() - 4);
             uint8_t * d = &stream->message[stream->STREAM_STATE_MESSAGE + 1];
             uint16_t address = *(d++);
             address |= *(d++)<<8;
             uint16_t len = *(d++);
             len |= ((uint16_t)*(d++))<<8;
 
-            while( totalsize-= (len+1) ) {
+            while( (totalsize-= (len+1)) >= 0 ) {
                 if( *(d) == id ) {
                     d++;
                     uint8_t * tab = &control_table[((uint8_t) address&255)];
