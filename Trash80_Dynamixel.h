@@ -14,5 +14,6 @@
 #include "servo.h"
 #include "servo_pro.h"
 #include "servo_dummy.h"
+#include "servo_dummy_pro.h"
 
 #endif
