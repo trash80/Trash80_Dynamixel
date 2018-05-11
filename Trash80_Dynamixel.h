@@ -11,6 +11,7 @@
 #include "dynamixeldevice.h"
 #include "dynamixelstream.h"
 #include "dynamixelsync.h"
+#include "dynamixelindirectmapping.h"
 #include "servo.h"
 #include "servo_pro.h"
 #include "servo_dummy.h"

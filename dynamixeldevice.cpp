@@ -43,6 +43,33 @@ void Device::update()
     }
 }
 
+bool Device::getTableData(uint16_t address, uint8_t * buffer, uint16_t size)
+{
+    uint8_t tries = 3;
+    uint8_t message[5] = {READ, (uint8_t) address, (uint8_t) (address>>8), (uint8_t) size, (uint8_t) (size>>8) };
+    uint32_t timeout = getMessageTimeout(stream->baud, 5);
+    uint32_t currentTime;
+    while(tries--) {
+        stream->write(id, message, sizeof(message));
+        currentTime = micros();
+        while((micros() - currentTime) < timeout) {
+            while(stream->update()) {
+                if(stream->available()) {
+                    if(stream->isReturn() && stream->getId() == id) {
+                        stream->readBytes(buffer,size);
+                        stream->reset();
+                        connected = true;
+                        return true;
+                    }
+                    stream->reset();
+                }
+            }
+        }
+    }
+    connected = false;
+    return false;
+}
+
 uint32_t Device::getValue(uint16_t address, uint8_t size)
 {
     if(transmitEnable == false) {
@@ -129,6 +156,36 @@ uint32_t Device::getMessageTimeout(uint32_t baud, uint8_t length)
     // Added an extra 1000us for processing
     return (((10000000L/baud) + 1) * (length + 9)) + 250 + 4000;
 }
+
+bool Device::setTableData(uint16_t address, uint8_t * buffer, uint16_t size)
+{
+    stream->write(id, address, buffer, size);
+    return confirmWrite();
+}
+
+void Device::setInternalTableData(uint16_t address, uint8_t * buffer, uint16_t size)
+{
+    uint8_t * cp = &control_table[((uint8_t) address&255)];
+    while(size--) *(cp++) = *(buffer++);
+}
+
+bool Device::setIndirectMapping(IndirectMapping * map) {
+    indirectMap = map;
+    return setTableData(indirectMap->start_address, (uint8_t*) indirectMap->map_address_table, indirectMap->size*2);
+};
+
+bool Device::getIndirectData() {
+    if(indirectMap == NULL || !getTableData(indirectMap->start_data_address, indirectMap->buffer, indirectMap->size)) {
+        return false;
+    }
+
+    uint16_t s = 0;
+    for(uint8_t i=0;i!=indirectMap->index;i++) {
+        setInternalTableData(indirectMap->map_address[i], &indirectMap->buffer[s], indirectMap->map_address_size[i]);
+        s += indirectMap->map_address_size[i];
+    }
+    return true;
+};
 
 bool Device::setValue(uint16_t address, uint8_t value)
 {

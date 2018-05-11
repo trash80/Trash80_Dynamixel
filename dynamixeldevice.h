@@ -1,6 +1,7 @@
 
 #include "Trash80_Dynamixel.h"
 #include "dynamixelstream.h"
+#include "dynamixelindirectmapping.h"
 
 #ifndef __TRASH80_DYNAMIXEL_DEVICE__
 #define __TRASH80_DYNAMIXEL_DEVICE__
@@ -156,6 +157,14 @@ class Device {
         bool setValue(uint16_t,uint8_t);
         bool setValue(uint16_t,uint16_t);
         bool setValue(uint16_t,uint32_t);
+
+        bool getTableData(uint16_t address, uint8_t * buffer, uint16_t size);
+        bool setTableData(uint16_t address, uint8_t * buffer, uint16_t size);
+        void setInternalTableData(uint16_t address, uint8_t * buffer, uint16_t size);
+
+        bool setIndirectMapping(IndirectMapping * map);
+        bool getIndirectData();
+        
         bool isConnected() { return connected; };
 
         uint8_t addressSize(uint16_t address) {
@@ -163,6 +172,7 @@ class Device {
         };
     protected:
         Stream * stream;
+        IndirectMapping * indirectMap;
         bool confirmWrite();
         uint32_t getMessageTimeout(uint32_t baud, uint8_t length);
 
